@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
+import me.sheepyang.lifegame.util.LogUtils;
+import me.sheepyang.lifegame.util.ToastUtils;
 
 
 /**
@@ -23,4 +25,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract
     @LayoutRes
     int getLayoutId();
+
+    public void showToast(int resId) {
+        if (!this.isFinishing()) {
+            ToastUtils.showShortToast(this, resId);
+        }
+    }
+
+    public void showToast(String msg) {
+        if (!this.isFinishing()) {
+            ToastUtils.showShortToast(this, msg);
+        }
+    }
+
+    public void log(Object msg) {
+        LogUtils.i(msg);
+    }
 }

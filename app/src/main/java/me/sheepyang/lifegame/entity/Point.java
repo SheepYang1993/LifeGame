@@ -6,6 +6,19 @@ package me.sheepyang.lifegame.entity;
 
 public class Point {
     private boolean isAlive;
+    private int level;
+
+    public Point(boolean isAlive) {
+        setAlive(isAlive);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     public boolean isAlive() {
         return isAlive;
@@ -13,5 +26,10 @@ public class Point {
 
     public void setAlive(boolean alive) {
         isAlive = alive;
+        if (alive) {
+            level = 1;
+        } else {
+            level = 0;
+        }
     }
 }

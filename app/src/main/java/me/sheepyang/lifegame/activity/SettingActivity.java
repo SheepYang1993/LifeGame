@@ -19,5 +19,6 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBarTitle("设置");
+        showBack(true);
     }
 }

@@ -61,6 +61,7 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_width_add"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -68,6 +69,7 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_width_sub"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="-"
@@ -88,6 +90,7 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_height_add"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -95,6 +98,7 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_height_sub"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="-"

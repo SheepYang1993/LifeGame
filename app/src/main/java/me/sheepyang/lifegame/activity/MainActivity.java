@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBarTitle("生命游戏");
+        setBarTitle("康威生命游戏");
         initView();
         initListener();
         initData();

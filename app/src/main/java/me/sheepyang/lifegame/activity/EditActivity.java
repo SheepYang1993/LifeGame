@@ -94,6 +94,15 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
             case R.id.btn_clear:
                 clearData();
                 break;
+            case R.id.btn_width_add:
+//                tempData = new Point[][];
+                break;
+            case R.id.btn_width_sub:
+                break;
+            case R.id.btn_height_add:
+                break;
+            case R.id.btn_height_sub:
+                break;
             case R.id.btn_demo1:
                 mSampleData = new Point[][]{
                         {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},

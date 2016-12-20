@@ -70,16 +70,17 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void clearData() {
-        //        mSampleData = new Integer[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
-//        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-//            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
-//                mSampleData[i][j] = 0;
-//            }
-//        }
+        mSampleData = new Point[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
+        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
+            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
+                mSampleData[i][j] = new Point(false);
+            }
+        }
+        mSampleAdapter.updata(mSampleData);
     }
 
     @Override
-    @OnClick({R.id.btn_ok, R.id.btn_demo_list})
+    @OnClick({R.id.btn_demo1, R.id.btn_clear, R.id.btn_ok, R.id.btn_demo_list})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_demo_list:
@@ -89,6 +90,31 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
                 Hawk.put(Config.HAWK_KEY_POINT_LIST, mSampleData);
                 setResult(RESULT_OK);
                 onBackPressed();
+                break;
+            case R.id.btn_clear:
+                clearData();
+                break;
+            case R.id.btn_demo1:
+                mSampleData = new Point[][]{
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
+                        {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)}
+                };
+                mSampleAdapter.updata(mSampleData);
                 break;
             default:
                 break;

@@ -198,6 +198,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (requestCode) {
             case TO_EDIT:
                 if (resultCode == RESULT_OK) {
+                    btnStart.setText("开始");
+                    stopGame();
                     initData();
                 }
                 break;

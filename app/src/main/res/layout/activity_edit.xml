@@ -33,6 +33,13 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_demo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="脉冲星"
+            android:textColor="@color/word_black" />
+
+        <Button
             android:id="@+id/btn_demo_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

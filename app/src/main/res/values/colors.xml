@@ -8,6 +8,11 @@
     <color name="black">#000</color>
     <color name="line_gray">#dedede</color>
 
+    <!--字黑色-->
+    <color name="word_black">#323232</color>
+    <!--字灰色-->
+    <color name="word_gary">#909090</color>
+
     <color name="background_white">#bebebe</color>
     <color name="background_gray">#f0f0f0</color>
 </resources>

@@ -1,7 +1,11 @@
 package me.sheepyang.lifegame.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
+import com.orhanobut.hawk.Hawk;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -9,86 +13,73 @@ import me.sheepyang.lifegame.R;
 import me.sheepyang.lifegame.adapter.tcontributisview.PointArraysContributionsViewAdapter;
 import me.sheepyang.lifegame.app.Config;
 import me.sheepyang.lifegame.entity.Point;
+import me.sheepyang.lifegame.util.AppUtil;
 import me.sheepyang.lifegame.widget.TContributionsView;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
+    private static final int TO_EDIT = 12345;
     @BindView(R.id.game_view)
     TContributionsView mGameView;
     @BindView(R.id.sample_view)
     TContributionsView mSampleView;
+    @BindView(R.id.btn_start)
+    Button btnStart;
     private boolean isStart;// 是否开始游戏了
-    private boolean isPause;
+    private boolean isFirstStart = true;
     private Point[][] mSampleData;
     private PointArraysContributionsViewAdapter mSampleAdapter;
     private Point[][] mGameData;
     private PointArraysContributionsViewAdapter mGameAdapter;
+    private long mGameSpeed = Config.GAME_SPEED;
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            log("run ----------------------------------");
             int count;
             if (mGameData != null && mGameData.length > 0) {
+                Point[][] tempData = new Point[Config.DEFAULT_GAME_HEIGHT][Config.DEFAULT_GAME_WIDTH];
+
                 for (int i = 0; i < Config.DEFAULT_GAME_HEIGHT; i++) {
                     for (int j = 0; j < Config.DEFAULT_GAME_WIDTH; j++) {
                         Point point = mGameData[i][j];
                         if (point != null) {
                             count = 0;
-                            for (int k = i - 1; k < i + 1; k++) {
-                                for (int l = j - 1; l < j + 1; l++) {
-                                    if (k < Config.DEFAULT_GAME_HEIGHT && l < Config.DEFAULT_GAME_WIDTH && k >= 0 && l >= 0 && k != i && l != j) {
-                                        if (mGameData[k][l].isAlive()) {
-                                            count++;
+                            for (int k = i - 1; k < i + 2; k++) {
+                                for (int l = j - 1; l < j + 2; l++) {
+                                    if (k >= 0 && l >= 0 && k < Config.DEFAULT_GAME_HEIGHT && l < Config.DEFAULT_GAME_WIDTH) {
+                                        if (!(k == i && l == j)) {
+                                            if (mGameData[k][l].getLevel() > 0) {
+                                                count++;
+                                            }
                                         }
                                     }
                                 }
                             }
 
-                                /*人口过少：当周围低于2个（不包含2个）存活细胞时， 本单元活细胞死亡。
-                                稳定：当周围有2个或3个存活细胞时， 本单元细胞保持原样。
-                                人口过剩：当周围有3个以上的存活细胞时，本单元活细胞死亡。
-                                繁殖：当周围有3个存活细胞时，本单元细胞存活/活化。*/
-                            log("count:" + count);
-                            if (count >= 2 || count <= 3) {// 死亡
-                                mGameData[i][j].setAlive(true);
-                            } else {// 存活
-                                mGameData[i][j].setAlive(false);
+                            /*人口过少：当周围低于2个（不包含2个）存活细胞时， 本单元活细胞死亡。
+                            稳定：当周围有2个或3个存活细胞时， 本单元细胞保持原样。
+                            人口过剩：当周围有3个以上的存活细胞时，本单元活细胞死亡。
+                            繁殖：当周围有3个存活细胞时，本单元细胞存活/活化。*/
+                            if (count >= 2 && count <= 3) {
+                                if (point.isAlive()) {// 保持稳定
+                                    tempData[i][j] = new Point(point.getLevel() + 1);
+                                } else {
+                                    if (count == 3) {// 繁殖
+                                        tempData[i][j] = new Point(true);
+                                    } else {// 保持稳定
+                                        tempData[i][j] = new Point(false);
+                                    }
+                                }
+                            } else {// 人口过少/过剩 -> 死亡
+                                tempData[i][j] = new Point(false);
                             }
-
-                            /////////////////////////////////////////////////////////////
-                            // 有九种情况，分别是四个顶点，四条边，以及中间部分。
-//                                if (i == 0) {// 第一行
-//                                    if (j == 0) {// 一、左上角
-//
-//                                    } else if (j == Config.DEFAULT_GAME_WIDTH - 1) {// 二、右上角
-//
-//                                    } else {// 三、上边界
-//
-//                                    }
-//                                } else if (i == Config.DEFAULT_GAME_HEIGHT - 1) {// 最后一行
-//                                    if (j == 0) {// 四、左下角
-//
-//                                    } else if (j == Config.DEFAULT_GAME_WIDTH - 1) {// 五、右下角
-//
-//                                    } else {// 六、下边界
-//
-//                                    }
-//                                } else {
-//                                    if (j == 0) {// 七、左边界
-//
-//                                    } else if (j == Config.DEFAULT_GAME_WIDTH - 1) {// 八、右边界
-//
-//                                    } else {// 九、中间部分
-//
-//                                    }
-//                                }
                         }
                     }
                 }
-                showToast("刷新");
+                mGameData = tempData;
                 mGameAdapter.updata(mGameData);
             }
-            mGameView.postDelayed(mRunnable, Config.GAME_SPEED);
+            mGameView.postDelayed(mRunnable, mGameSpeed);
         }
     };
 
@@ -100,6 +91,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setBarTitle("生命游戏");
         initView();
         initListener();
         initData();
@@ -109,42 +101,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mSampleView.setOnClickListener(new TContributionsView.onClickListener() {
             @Override
             public void onClick() {
-                showToast("跳转至编辑界面");
-            }
-        });
-        mGameView.setOnItemClickListener(new TContributionsView.onItemClickListener() {
-            @Override
-            public void onItemClick(int itemIndexX, int itemIndexY) {
-                showToast("x:" + itemIndexX + ", y:" + itemIndexY);
+                startActivityForResult(new Intent(mContext, EditActivity.class), TO_EDIT);
             }
         });
     }
 
     private void initView() {
-
+        mSampleView.setItemHeight(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_GAME_WIDTH) / Config.DEFAULT_GAME_WIDTH));
+        mSampleView.setItemWidth(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_GAME_WIDTH) / Config.DEFAULT_GAME_WIDTH));
     }
 
     private void initData() {
-        initSampleData();
+        getSampleData();
         initGameData();
     }
 
-    private void initSampleData() {
-//        mSampleData = new Integer[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
-//        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-//            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
-//                mSampleData[i][j] = 0;
-//            }
-//        }
-        mSampleData = new Point[][]{
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(true), new Point(true), new Point(true), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-                {new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false), new Point(false)},
-        };
+    private void getSampleData() {
+        mSampleData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
         mSampleAdapter = new PointArraysContributionsViewAdapter();
         mSampleAdapter.setArrays(mSampleData);
         mSampleView.setAdapter(mSampleAdapter);
@@ -163,43 +136,56 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    @OnClick({R.id.btn_stop, R.id.btn_speed_up, R.id.btn_speed_down, R.id.btn_start})
+    @OnClick({R.id.btn_setting, R.id.btn_reset, R.id.btn_stop, R.id.btn_speed_up, R.id.btn_speed_down, R.id.btn_start})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_start:// 开始游戏
                 if (isStart) {
-                    showToast("游戏已经开始了");
-                    if (isPause) {
-                        isPause = false;
-                        mGameView.postDelayed(mRunnable, Config.GAME_SPEED);
-                    }
+                    btnStart.setText("开始");
+                    pauseGame();
                 } else {
-                    showToast("开始游戏");
-                    initSampleData();
-                    if (mSampleData != null && mSampleData.length > 0) {
-                        initGameData();
-                        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-                            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
-                                if (i < Config.DEFAULT_GAME_HEIGHT && j < Config.DEFAULT_GAME_WIDTH) {
-                                    mGameData[i][j] = mSampleData[i][j];
+                    btnStart.setText("暂停");
+                    if (isFirstStart) {
+                        if (mSampleData != null && mSampleData.length > 0) {
+                            initGameData();
+                            for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
+                                for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
+                                    if (i < Config.DEFAULT_GAME_HEIGHT && j < Config.DEFAULT_GAME_WIDTH) {
+                                        mGameData[i][j] = mSampleData[i][j];
+                                    }
                                 }
                             }
+                            mGameAdapter.updata(mGameData);
+                            isFirstStart = false;
                         }
-                        mGameAdapter.updata(mGameData);
-                        isStart = true;
-                        isPause = false;
-                        mGameView.postDelayed(mRunnable, Config.GAME_SPEED);
                     }
+                    isStart = true;
+                    mGameView.postDelayed(mRunnable, mGameSpeed);
                 }
                 break;
-            case R.id.btn_stop:// 暂停游戏
-                showToast("暂停游戏");
-                isStart = false;
-                mGameView.removeCallbacks(mRunnable);
+            case R.id.btn_stop:// 停止游戏
+                btnStart.setText("开始");
+                stopGame();
+                break;
+            case R.id.btn_reset:
+                mGameSpeed = Config.GAME_SPEED;
                 break;
             case R.id.btn_speed_up:// 加速
+                if (mGameSpeed > 300) {
+                    mGameSpeed -= 300;
+                }
+                mGameView.removeCallbacks(mRunnable);
+                mGameView.postDelayed(mRunnable, mGameSpeed);
                 break;
             case R.id.btn_speed_down:// 减速
+                if (mGameSpeed < 3000) {
+                    mGameSpeed += 300;
+                }
+                mGameView.removeCallbacks(mRunnable);
+                mGameView.postDelayed(mRunnable, mGameSpeed);
+                break;
+            case R.id.btn_setting:
+                startActivity(new Intent(mContext, SettingActivity.class));
                 break;
             default:
                 break;
@@ -207,20 +193,47 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case TO_EDIT:
+                if (resultCode == RESULT_OK) {
+                    initData();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void pauseGame() {
+        isStart = false;
+        mGameView.removeCallbacks(mRunnable);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if (isStart) {
+            mGameView.postDelayed(mRunnable, mGameSpeed);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        isPause = true;
+        mGameView.removeCallbacks(mRunnable);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isStart = false;
+        stopGame();
+    }
+
+    private void stopGame() {
+        isFirstStart = true;
+        pauseGame();
         initGameData();
     }
 //    private void useIntegerArraysContributionsAdapterMineCraft(TContributionsView contributionsView) {

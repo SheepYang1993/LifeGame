@@ -91,6 +91,18 @@ public class TContributionsView extends View {
         }
     }
 
+    public void setItemSpace(int itemSpace) {
+        this.itemSpace = itemSpace;
+    }
+
+    public void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
+    }
+
+    public void setItemHeight(int itemHeight) {
+        this.itemHeight = itemHeight;
+    }
+
     public void setOnItemClickListener(onItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }

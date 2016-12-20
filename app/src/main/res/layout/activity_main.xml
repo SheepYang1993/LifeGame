@@ -29,17 +29,22 @@
                 android:id="@+id/btn_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="开始" />
+                android:text="开始"
+                android:textColor="@color/word_black" />
 
             <Button
+                android:id="@+id/btn_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="复位" />
+                android:text="复位"
+                android:textColor="@color/word_black" />
 
             <Button
+                android:id="@+id/btn_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置" />
+                android:text="设置"
+                android:textColor="@color/word_black" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,32 +57,55 @@
                 android:id="@+id/btn_stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="停止" />
+                android:text="停止"
+                android:textColor="@color/word_black" />
 
             <Button
                 android:id="@+id/btn_speed_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="加速" />
+                android:text="加速"
+                android:textColor="@color/word_black" />
 
             <Button
                 android:id="@+id/btn_speed_down"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="减速" />
+                android:text="减速"
+                android:textColor="@color/word_black" />
         </LinearLayout>
 
-        <me.sheepyang.lifegame.widget.TContributionsView
-            android:id="@+id/sample_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:contributions_color_1="#755D19"
-            app:contributions_color_2="#32E8C3"
-            app:contributions_color_3="#29BE9A"
-            app:contributions_color_4="#0E2F2C"
-            app:contributions_item_height="15dp"
-            app:contributions_item_space="1dp"
-            app:contributions_item_width="15dp" />
+        <ScrollView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <me.sheepyang.lifegame.widget.CustomHScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none">
+
+                    <me.sheepyang.lifegame.widget.TContributionsView
+                        android:id="@+id/sample_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:contributions_color_1="#b3c587"
+                        app:contributions_color_2="#f4de29"
+                        app:contributions_color_3="#f40d64"
+                        app:contributions_color_4="#af1258"
+                        app:contributions_item_height="15dp"
+                        app:contributions_item_space="1dp"
+                        app:contributions_item_width="15dp" />
+                </me.sheepyang.lifegame.widget.CustomHScrollView>
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
     <ScrollView
@@ -99,10 +127,10 @@
                     android:id="@+id/game_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:contributions_color_1="#755D19"
-                    app:contributions_color_2="#32E8C3"
-                    app:contributions_color_3="#29BE9A"
-                    app:contributions_color_4="#0E2F2C"
+                    app:contributions_color_1="#b3c587"
+                    app:contributions_color_2="#f4de29"
+                    app:contributions_color_3="#f40d64"
+                    app:contributions_color_4="#af1258"
                     app:contributions_item_height="15dp"
                     app:contributions_item_space="1dp"
                     app:contributions_item_width="15dp" />

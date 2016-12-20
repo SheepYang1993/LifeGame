@@ -12,24 +12,33 @@ public class Point {
         setAlive(isAlive);
     }
 
+    public Point(int level) {
+        setLevel(level);
+    }
+
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public void setLevel(int level) {
-        this.level = level;
+        if (level <= 0) {
+            this.level = 0;
+        } else {
+            this.level = level % 4 == 0 ? 4 : level % 4;
+        }
+        this.isAlive = (this.level > 0);
     }
 
     public boolean isAlive() {
-        return isAlive;
+        return this.isAlive;
     }
 
     public void setAlive(boolean alive) {
-        isAlive = alive;
+        this.isAlive = alive;
         if (alive) {
-            level = 1;
+            this.level = 1;
         } else {
-            level = 0;
+            this.level = 0;
         }
     }
 }

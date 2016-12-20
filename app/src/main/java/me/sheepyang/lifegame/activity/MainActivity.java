@@ -164,7 +164,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_stop:// 停止游戏
-                btnStart.setText("开始");
                 stopGame();
                 break;
             case R.id.btn_reset:
@@ -198,9 +197,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (requestCode) {
             case TO_EDIT:
                 if (resultCode == RESULT_OK) {
-                    btnStart.setText("开始");
                     stopGame();
-                    initData();
+                    getSampleData();
                 }
                 break;
             default:
@@ -234,6 +232,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void stopGame() {
+        btnStart.setText("开始");
         isFirstStart = true;
         pauseGame();
         initGameData();

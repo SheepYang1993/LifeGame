@@ -170,15 +170,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mGameSpeed = Config.GAME_SPEED;
                 break;
             case R.id.btn_speed_up:// 加速
-                if (mGameSpeed > 300) {
-                    mGameSpeed -= 300;
+                if (mGameSpeed > 50) {
+                    mGameSpeed -= Config.EACH_SPEED;
                 }
                 mGameView.removeCallbacks(mRunnable);
                 mGameView.postDelayed(mRunnable, mGameSpeed);
                 break;
             case R.id.btn_speed_down:// 减速
                 if (mGameSpeed < 3000) {
-                    mGameSpeed += 300;
+                    mGameSpeed += Config.EACH_SPEED;
                 }
                 mGameView.removeCallbacks(mRunnable);
                 mGameView.postDelayed(mRunnable, mGameSpeed);

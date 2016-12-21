@@ -10,10 +10,12 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import me.sheepyang.lifegame.R;
 import me.sheepyang.lifegame.adapter.tcontributisview.BaseContributionsViewAdapter;
 import me.sheepyang.lifegame.adapter.tcontributisview.TestContributionAdapter;
+import me.sheepyang.lifegame.util.AppUtil;
 import me.sheepyang.lifegame.util.LogUtils;
 
 /**
@@ -25,6 +27,8 @@ public class TContributionsView extends View {
     private onItemClickListener mOnItemClickListener;
     private onClickListener mOnClickListener;
     protected BaseContributionsViewAdapter mAdapter;
+    private long mStartTime = 0;
+    private long mEndTime = 0;
 
     private int colorEmpty = Color.parseColor("#e0e0e0");
     private int colorL1 = Color.parseColor("#cde372");
@@ -123,8 +127,12 @@ public class TContributionsView extends View {
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             mTouchCount--;
         }
+        //获取到手指处的横坐标和纵坐标
+        int x = (int) event.getX();
+        int y = (int) event.getY();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                mStartTime = System.currentTimeMillis();
                 mStartPoint.x = event.getX();
                 mStartPoint.y = event.getY();
                 break;
@@ -133,14 +141,19 @@ public class TContributionsView extends View {
                 mEndPoint.y = event.getY();
                 int itemIndexX = getItemIndexX(mStartPoint.x);
                 int itemIndexY = getItemIndexY(mStartPoint.y);
-                if (itemIndexX == getItemIndexX(mEndPoint.x) && itemIndexY == getItemIndexY(mEndPoint.y)) {
-                    LogUtils.i("ItemClick:" + itemIndexX + "," + itemIndexY);
-                    //TODO onItemClick
-                    if (mOnClickListener != null) {
-                        mOnClickListener.onClick();
-                    } else {
-                        if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onItemClick(itemIndexX, itemIndexY);
+
+                mEndTime = System.currentTimeMillis();
+                //当从点击到弹起小于半秒的时候,则判断为点击,如果超过则不响应点击事件
+                if ((mEndTime - mStartTime) < 0.1 * 1000L) {// 触发点击事件
+                    if (itemIndexX == getItemIndexX(mEndPoint.x) && itemIndexY == getItemIndexY(mEndPoint.y)) {
+                        LogUtils.i("ItemClick:" + itemIndexX + "," + itemIndexY);
+                        //TODO onItemClick
+                        if (mOnClickListener != null) {
+                            mOnClickListener.onClick();
+                        } else {
+                            if (mOnItemClickListener != null) {
+                                mOnItemClickListener.onItemClick(itemIndexX, itemIndexY);
+                            }
                         }
                     }
                 }
@@ -148,6 +161,45 @@ public class TContributionsView extends View {
             case MotionEvent.ACTION_CANCEL:
                 break;
             case MotionEvent.ACTION_MOVE:
+                View parent = ((ViewGroup) getParent());
+                int offX = 0;
+                int offY = 0;
+                //计算移动的距离
+                if (getMeasuredHeight() > parent.getMeasuredHeight()) {
+                    offY = (int) (y - mStartPoint.y);
+                }
+                if (getMeasuredWidth() > parent.getMeasuredWidth()) {
+                    offX = (int) (x - mStartPoint.x);
+                }
+
+                if (offX > 0) {
+                    LogUtils.i("右滑");
+                    if (parent.getScrollX() < -(parent.getMeasuredWidth() - AppUtil.dip2px(getContext(), 150))) {
+                        LogUtils.i("不能右滑");
+                        offX = 0;
+                    }
+                } else if (offX < 0) {
+                    LogUtils.i("左滑");
+                    if (parent.getScrollX() > (getMeasuredWidth() - AppUtil.dip2px(getContext(), 150))) {
+                        LogUtils.i("不能左滑");
+                        offX = 0;
+                    }
+                }
+
+                if (offY > 0) {
+                    LogUtils.i("下滑");
+                    if (parent.getScrollY() < -(parent.getMeasuredHeight() - AppUtil.dip2px(getContext(), 150))) {
+                        LogUtils.i("不能下滑");
+                        offY = 0;
+                    }
+                } else if (offY < 0) {
+                    LogUtils.i("上滑");
+                    if (parent.getScrollY() > (getMeasuredHeight() - AppUtil.dip2px(getContext(), 150))) {
+                        LogUtils.i("不能上滑");
+                        offY = 0;
+                    }
+                }
+                parent.scrollBy(-offX, -offY);
                 break;
         }
         return true;

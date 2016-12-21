@@ -107,8 +107,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
-        mSampleView.setItemHeight(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_GAME_WIDTH) / Config.DEFAULT_GAME_WIDTH));
-        mSampleView.setItemWidth(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_GAME_WIDTH) / Config.DEFAULT_GAME_WIDTH));
+        mSampleView.setItemHeight(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_SAMPLE_WIDTH) / Config.DEFAULT_SAMPLE_WIDTH));
+        mSampleView.setItemWidth(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_SAMPLE_WIDTH) / Config.DEFAULT_SAMPLE_WIDTH));
     }
 
     private void initData() {

@@ -13,6 +13,7 @@ import me.sheepyang.lifegame.R;
 import me.sheepyang.lifegame.adapter.tcontributisview.PointArraysContributionsViewAdapter;
 import me.sheepyang.lifegame.app.Config;
 import me.sheepyang.lifegame.entity.Point;
+import me.sheepyang.lifegame.util.HawkUtils;
 import me.sheepyang.lifegame.widget.TContributionsView;
 
 /**
@@ -36,7 +37,6 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setBarTitle("编辑生物");
         showBack(true);
-        initView();
         initListener();
         initData();
     }
@@ -59,20 +59,32 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initData() {
-        mSampleData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
+        mSampleData = new Point[1][1];
         mSampleAdapter = new PointArraysContributionsViewAdapter();
         mSampleAdapter.setArrays(mSampleData);
         mSampleView.setAdapter(mSampleAdapter);
+        getSampleData();
     }
 
-    private void initView() {
-
+    private void getSampleData() {
+        Point[][] tempData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
+        mSampleData = new Point[HawkUtils.getSampleHeight()][HawkUtils.getSampleWidth()];
+        for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
+            for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
+                if (tempData != null && i < tempData.length && tempData.length > 0 && tempData[i] != null && j < tempData[i].length && tempData[i].length > 0) {
+                    mSampleData[i][j] = tempData[i][j];
+                } else {
+                    mSampleData[i][j] = new Point(false);
+                }
+            }
+        }
+        mSampleAdapter.updata(mSampleData);
     }
 
     public void clearData() {
-        mSampleData = new Point[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
-        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
+        mSampleData = new Point[HawkUtils.getSampleHeight()][HawkUtils.getSampleWidth()];
+        for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
+            for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
                 mSampleData[i][j] = new Point(false);
             }
         }
@@ -93,15 +105,6 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.btn_clear:
                 clearData();
-                break;
-            case R.id.btn_width_add:
-//                tempData = new Point[][];
-                break;
-            case R.id.btn_width_sub:
-                break;
-            case R.id.btn_height_add:
-                break;
-            case R.id.btn_height_sub:
                 break;
             case R.id.btn_demo1:
                 mSampleData = new Point[][]{

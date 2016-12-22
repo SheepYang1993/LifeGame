@@ -24,8 +24,6 @@ import me.sheepyang.lifegame.util.LogUtils;
  */
 
 public class TContributionsView extends View {
-    //移动的阈值
-    private static final int TOUCH_SLOP = 20;
     private onItemClickListener mOnItemClickListener;
     private onClickListener mOnClickListener;
     protected BaseContributionsViewAdapter mAdapter;
@@ -129,8 +127,6 @@ public class TContributionsView extends View {
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             mTouchCount--;
         }
-        int offX;
-        int offY;
         //获取到手指处的横坐标和纵坐标
         int x = (int) event.getX();
         int y = (int) event.getY();
@@ -147,12 +143,7 @@ public class TContributionsView extends View {
                 int itemIndexY = getItemIndexY(mStartPoint.y);
                 mEndTime = System.currentTimeMillis();
 
-                offX = (int) (mEndPoint.x - mStartPoint.x);
-                offY = (int) (mEndPoint.y - mStartPoint.y);
-                //当从点击到弹起小于半秒的时候,则判断为点击,如果超过则不响应点击事件
-                int offXY = (int) Math.sqrt(offX * offX + offY * offY);
-                LogUtils.i("offXY:" + offXY);
-                if ((mEndTime - mStartTime) < 0.1 * 1000L && offXY < TOUCH_SLOP) {// 触发点击事件且移动距离小于阀值
+                if ((mEndTime - mStartTime) < 0.1 * 1000L) {// 触发点击事件
                     if (itemIndexX == getItemIndexX(mEndPoint.x) && itemIndexY == getItemIndexY(mEndPoint.y)) {
                         LogUtils.i("ItemClick:" + itemIndexX + "," + itemIndexY);
                         //TODO onItemClick
@@ -169,9 +160,9 @@ public class TContributionsView extends View {
             case MotionEvent.ACTION_CANCEL:
                 break;
             case MotionEvent.ACTION_MOVE:
+                int offX = 0;
+                int offY = 0;
                 View parent = ((ViewGroup) getParent());
-                offX = 0;
-                offY = 0;
                 //计算移动的距离
                 if (getMeasuredHeight() > parent.getMeasuredHeight()) {
                     offY = (int) (y - mStartPoint.y);
@@ -181,29 +172,29 @@ public class TContributionsView extends View {
                 }
 
                 if (offX > 0) {
-                    LogUtils.i("右滑");
+//                    LogUtils.i("右滑");
                     if (parent.getScrollX() < -(parent.getMeasuredWidth() - AppUtil.dip2px(getContext(), 150))) {
-                        LogUtils.i("不能右滑");
+//                        LogUtils.i("不能右滑");
                         offX = 0;
                     }
                 } else if (offX < 0) {
-                    LogUtils.i("左滑");
+//                    LogUtils.i("左滑");
                     if (parent.getScrollX() > (getMeasuredWidth() - AppUtil.dip2px(getContext(), 150))) {
-                        LogUtils.i("不能左滑");
+//                        LogUtils.i("不能左滑");
                         offX = 0;
                     }
                 }
 
                 if (offY > 0) {
-                    LogUtils.i("下滑");
+//                    LogUtils.i("下滑");
                     if (parent.getScrollY() < -(parent.getMeasuredHeight() - AppUtil.dip2px(getContext(), 150))) {
-                        LogUtils.i("不能下滑");
+//                        LogUtils.i("不能下滑");
                         offY = 0;
                     }
                 } else if (offY < 0) {
-                    LogUtils.i("上滑");
+//                    LogUtils.i("上滑");
                     if (parent.getScrollY() > (getMeasuredHeight() - AppUtil.dip2px(getContext(), 150))) {
-                        LogUtils.i("不能上滑");
+//                        LogUtils.i("不能上滑");
                         offY = 0;
                     }
                 }

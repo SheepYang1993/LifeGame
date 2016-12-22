@@ -51,64 +51,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="宽度：17"
-            android:textColor="@color/word_black" />
-
-        <Button
-            android:id="@+id/btn_width_add"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="+"
-            android:textColor="@color/word_black" />
-
-        <Button
-            android:id="@+id/btn_width_sub"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textColor="@color/word_black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="高度：17"
-            android:textColor="@color/word_black" />
-
-        <Button
-            android:id="@+id/btn_height_add"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="+"
-            android:textColor="@color/word_black" />
-
-        <Button
-            android:id="@+id/btn_height_sub"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textColor="@color/word_black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <me.sheepyang.lifegame.widget.TContributionsView

@@ -13,12 +13,13 @@ import me.sheepyang.lifegame.R;
 import me.sheepyang.lifegame.adapter.tcontributisview.PointArraysContributionsViewAdapter;
 import me.sheepyang.lifegame.app.Config;
 import me.sheepyang.lifegame.entity.Point;
-import me.sheepyang.lifegame.util.AppUtil;
+import me.sheepyang.lifegame.util.HawkUtils;
 import me.sheepyang.lifegame.widget.TContributionsView;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private static final int TO_EDIT = 12345;
+    private static final int TO_SETTING = 12312;
     @BindView(R.id.game_view)
     TContributionsView mGameView;
     @BindView(R.id.sample_view)
@@ -31,22 +32,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private PointArraysContributionsViewAdapter mSampleAdapter;
     private Point[][] mGameData;
     private PointArraysContributionsViewAdapter mGameAdapter;
-    private long mGameSpeed = Config.GAME_SPEED;
+    private long mGameSpeed;
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             int count;
             if (mGameData != null && mGameData.length > 0) {
-                Point[][] tempData = new Point[Config.DEFAULT_GAME_HEIGHT][Config.DEFAULT_GAME_WIDTH];
+                Point[][] tempData = new Point[HawkUtils.getGameHeight()][HawkUtils.getGameWidth()];
 
-                for (int i = 0; i < Config.DEFAULT_GAME_HEIGHT; i++) {
-                    for (int j = 0; j < Config.DEFAULT_GAME_WIDTH; j++) {
+                for (int i = 0; i < HawkUtils.getGameHeight(); i++) {
+                    for (int j = 0; j < HawkUtils.getGameWidth(); j++) {
                         Point point = mGameData[i][j];
                         if (point != null) {
                             count = 0;
                             for (int k = i - 1; k < i + 2; k++) {
                                 for (int l = j - 1; l < j + 2; l++) {
-                                    if (k >= 0 && l >= 0 && k < Config.DEFAULT_GAME_HEIGHT && l < Config.DEFAULT_GAME_WIDTH) {
+                                    if (k >= 0 && l >= 0 && k < HawkUtils.getGameHeight() && l < HawkUtils.getGameWidth()) {
                                         if (!(k == i && l == j)) {
                                             if (mGameData[k][l].getLevel() > 0) {
                                                 count++;
@@ -79,6 +80,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mGameData = tempData;
                 mGameAdapter.updata(mGameData);
             }
+            showToast("mGameSpeed:" + mGameSpeed);
             mGameView.postDelayed(mRunnable, mGameSpeed);
         }
     };
@@ -107,8 +109,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
-        mSampleView.setItemHeight(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_SAMPLE_WIDTH) / Config.DEFAULT_SAMPLE_WIDTH));
-        mSampleView.setItemWidth(AppUtil.dip2px(mContext, (150 - Config.DEFAULT_SAMPLE_WIDTH) / Config.DEFAULT_SAMPLE_WIDTH));
+
     }
 
     private void initData() {
@@ -118,10 +119,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void getSampleData() {
         Point[][] tempData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
-        mSampleData = new Point[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
-        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
-                if (tempData != null && tempData.length > 0 && tempData[i].length > 0 && i < tempData.length && j < tempData[i].length) {
+        mSampleData = new Point[HawkUtils.getSampleHeight()][HawkUtils.getSampleWidth()];
+        for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
+            for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
+                if (tempData != null && i < tempData.length && tempData.length > 0 && tempData[i] != null && j < tempData[i].length && tempData[i].length > 0) {
                     mSampleData[i][j] = tempData[i][j];
                 } else {
                     mSampleData[i][j] = new Point(false);
@@ -134,9 +135,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initGameData() {
-        mGameData = new Point[Config.DEFAULT_GAME_HEIGHT][Config.DEFAULT_GAME_WIDTH];
-        for (int i = 0; i < Config.DEFAULT_GAME_HEIGHT; i++) {
-            for (int j = 0; j < Config.DEFAULT_GAME_WIDTH; j++) {
+        mGameSpeed = HawkUtils.getGameSpeed();
+        mGameData = new Point[HawkUtils.getGameHeight()][HawkUtils.getGameWidth()];
+        for (int i = 0; i < HawkUtils.getGameHeight(); i++) {
+            for (int j = 0; j < HawkUtils.getGameWidth(); j++) {
                 mGameData[i][j] = new Point(false);
             }
         }
@@ -158,9 +160,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (isFirstStart) {
                         if (mSampleData != null && mSampleData.length > 0) {
                             initGameData();
-                            for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
-                                for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
-                                    if (i < Config.DEFAULT_GAME_HEIGHT && j < Config.DEFAULT_GAME_WIDTH) {
+                            for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
+                                for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
+                                    if (i < HawkUtils.getGameHeight() && j < HawkUtils.getGameWidth() && i < HawkUtils.getSampleHeight() && j < HawkUtils.getSampleWidth()) {
                                         mGameData[i][j] = mSampleData[i][j];
                                     }
                                 }
@@ -177,24 +179,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 stopGame();
                 break;
             case R.id.btn_reset:
-                mGameSpeed = Config.GAME_SPEED;
+                mGameSpeed = HawkUtils.getGameSpeed();
                 break;
             case R.id.btn_speed_up:// 加速
                 if (mGameSpeed > 50) {
                     mGameSpeed -= Config.EACH_SPEED;
                 }
-                mGameView.removeCallbacks(mRunnable);
-                mGameView.postDelayed(mRunnable, mGameSpeed);
                 break;
             case R.id.btn_speed_down:// 减速
                 if (mGameSpeed < 3000) {
                     mGameSpeed += Config.EACH_SPEED;
                 }
-                mGameView.removeCallbacks(mRunnable);
-                mGameView.postDelayed(mRunnable, mGameSpeed);
                 break;
             case R.id.btn_setting:
-                startActivity(new Intent(mContext, SettingActivity.class));
+                startActivityForResult(new Intent(mContext, SettingActivity.class), TO_SETTING);
                 break;
             default:
                 break;
@@ -206,6 +204,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case TO_EDIT:
+                if (resultCode == RESULT_OK) {
+                    stopGame();
+                    getSampleData();
+                }
+                break;
+            case TO_SETTING:
                 if (resultCode == RESULT_OK) {
                     stopGame();
                     getSampleData();

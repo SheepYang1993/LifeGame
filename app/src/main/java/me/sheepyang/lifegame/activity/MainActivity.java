@@ -117,7 +117,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getSampleData() {
-        mSampleData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
+        Point[][] tempData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
+        mSampleData = new Point[Config.DEFAULT_SAMPLE_HEIGHT][Config.DEFAULT_SAMPLE_WIDTH];
+        for (int i = 0; i < Config.DEFAULT_SAMPLE_HEIGHT; i++) {
+            for (int j = 0; j < Config.DEFAULT_SAMPLE_WIDTH; j++) {
+                if (tempData != null && tempData.length > 0 && tempData[i].length > 0 && i < tempData.length && j < tempData[i].length) {
+                    mSampleData[i][j] = tempData[i][j];
+                } else {
+                    mSampleData[i][j] = new Point(false);
+                }
+            }
+        }
         mSampleAdapter = new PointArraysContributionsViewAdapter();
         mSampleAdapter.setArrays(mSampleData);
         mSampleView.setAdapter(mSampleAdapter);

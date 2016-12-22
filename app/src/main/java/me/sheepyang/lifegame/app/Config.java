@@ -9,8 +9,8 @@ public class Config {
 
     public static final Integer DEFAULT_GAME_WIDTH = 50;// 游戏界面宽度
     public static final Integer DEFAULT_GAME_HEIGHT = 17;// 游戏界面高度
-    public static final Integer DEFAULT_SAMPLE_WIDTH = 17;// 右上角Sample界面宽度
-    public static final Integer DEFAULT_SAMPLE_HEIGHT = 17;// 右上角Sample界面高度
+    public static final Integer DEFAULT_SAMPLE_WIDTH = 50;// 右上角Sample界面宽度
+    public static final Integer DEFAULT_SAMPLE_HEIGHT = 50;// 右上角Sample界面高度
     public static final long GAME_SPEED = 650;// 游戏初始速度
     public static final long EACH_SPEED = 50;// 每次增加/减少的速度
 }

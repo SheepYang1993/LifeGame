@@ -2,6 +2,7 @@ package me.sheepyang.lifegame.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,6 +14,7 @@ import me.sheepyang.lifegame.R;
 import me.sheepyang.lifegame.adapter.tcontributisview.PointArraysContributionsViewAdapter;
 import me.sheepyang.lifegame.app.Config;
 import me.sheepyang.lifegame.entity.Point;
+import me.sheepyang.lifegame.util.AppManager;
 import me.sheepyang.lifegame.util.HawkUtils;
 import me.sheepyang.lifegame.widget.TContributionsView;
 
@@ -33,21 +35,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Point[][] mGameData;
     private PointArraysContributionsViewAdapter mGameAdapter;
     private long mGameSpeed;
+    private long mCurrentTime;
+    private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             int count;
             if (mGameData != null && mGameData.length > 0) {
-                Point[][] tempData = new Point[HawkUtils.getGameHeight()][HawkUtils.getGameWidth()];
+                Point[][] tempData = new Point[mGameHeight][mGameWidth];
 
-                for (int i = 0; i < HawkUtils.getGameHeight(); i++) {
-                    for (int j = 0; j < HawkUtils.getGameWidth(); j++) {
+                for (int i = 0; i < mGameHeight; i++) {
+                    for (int j = 0; j < mGameWidth; j++) {
                         Point point = mGameData[i][j];
                         if (point != null) {
                             count = 0;
                             for (int k = i - 1; k < i + 2; k++) {
                                 for (int l = j - 1; l < j + 2; l++) {
-                                    if (k >= 0 && l >= 0 && k < HawkUtils.getGameHeight() && l < HawkUtils.getGameWidth()) {
+                                    if (k >= 0 && l >= 0 && k < mGameHeight && l < mGameWidth) {
                                         if (!(k == i && l == j)) {
                                             if (mGameData[k][l].getLevel() > 0) {
                                                 count++;
@@ -80,10 +84,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mGameData = tempData;
                 mGameAdapter.updata(mGameData);
             }
-            showToast("mGameSpeed:" + mGameSpeed);
-            mGameView.postDelayed(mRunnable, mGameSpeed);
+            log("mGameSpeed:" + mGameSpeed);
+            mHandler.postDelayed(mRunnable, mGameSpeed);
         }
     };
+    private int mGameHeight;
+    private int mGameWidth;
+    private int mSampleWidth;
+    private int mSampleHeight;
 
     @Override
     public int getLayoutId() {
@@ -94,7 +102,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBarTitle("康威生命游戏");
-        initView();
         initListener();
         initData();
     }
@@ -108,20 +115,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    private void initView() {
-
+    private void initHawkData() {
+        mGameWidth = HawkUtils.getGameWidth();
+        mGameHeight = HawkUtils.getGameHeight();
+        mSampleWidth = HawkUtils.getSampleWidth();
+        mSampleHeight = HawkUtils.getSampleHeight();
+        mGameSpeed = HawkUtils.getGameSpeed();
     }
 
     private void initData() {
+        initHawkData();
         getSampleData();
         initGameData();
     }
 
     private void getSampleData() {
         Point[][] tempData = Hawk.get(Config.HAWK_KEY_POINT_LIST);
-        mSampleData = new Point[HawkUtils.getSampleHeight()][HawkUtils.getSampleWidth()];
-        for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
-            for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
+        mSampleData = new Point[mSampleHeight][mSampleWidth];
+        for (int i = 0; i < mSampleHeight; i++) {
+            for (int j = 0; j < mSampleWidth; j++) {
                 if (tempData != null && i < tempData.length && tempData.length > 0 && tempData[i] != null && j < tempData[i].length && tempData[i].length > 0) {
                     mSampleData[i][j] = tempData[i][j];
                 } else {
@@ -135,10 +147,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initGameData() {
-        mGameSpeed = HawkUtils.getGameSpeed();
-        mGameData = new Point[HawkUtils.getGameHeight()][HawkUtils.getGameWidth()];
-        for (int i = 0; i < HawkUtils.getGameHeight(); i++) {
-            for (int j = 0; j < HawkUtils.getGameWidth(); j++) {
+        mGameData = new Point[mGameHeight][mGameWidth];
+        for (int i = 0; i < mGameHeight; i++) {
+            for (int j = 0; j < mGameWidth; j++) {
                 mGameData[i][j] = new Point(false);
             }
         }
@@ -160,9 +171,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (isFirstStart) {
                         if (mSampleData != null && mSampleData.length > 0) {
                             initGameData();
-                            for (int i = 0; i < HawkUtils.getSampleHeight(); i++) {
-                                for (int j = 0; j < HawkUtils.getSampleWidth(); j++) {
-                                    if (i < HawkUtils.getGameHeight() && j < HawkUtils.getGameWidth() && i < HawkUtils.getSampleHeight() && j < HawkUtils.getSampleWidth()) {
+                            for (int i = 0; i < mSampleHeight; i++) {
+                                for (int j = 0; j < mSampleWidth; j++) {
+                                    if (i < mGameHeight && j < mGameWidth && i < mSampleHeight && j < mSampleWidth) {
                                         mGameData[i][j] = mSampleData[i][j];
                                     }
                                 }
@@ -172,7 +183,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         }
                     }
                     isStart = true;
-                    mGameView.postDelayed(mRunnable, mGameSpeed);
+                    mHandler.postDelayed(mRunnable, mGameSpeed);
                 }
                 break;
             case R.id.btn_stop:// 停止游戏
@@ -192,7 +203,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_setting:
-                startActivityForResult(new Intent(mContext, SettingActivity.class), TO_SETTING);
+                startActivity(new Intent(mContext, SettingActivity.class));
+                finish();
                 break;
             default:
                 break;
@@ -220,23 +232,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - mCurrentTime < 2000) {
+            mCurrentTime = 0;
+            AppManager.getAppManager().AppExit(mContext);
+        } else {
+            mCurrentTime = System.currentTimeMillis();
+            showToast("再次点击退出APP");
+        }
+    }
+
     private void pauseGame() {
         isStart = false;
-        mGameView.removeCallbacks(mRunnable);
+        mHandler.removeCallbacks(mRunnable);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (isStart) {
-            mGameView.postDelayed(mRunnable, mGameSpeed);
+            mHandler.postDelayed(mRunnable, mGameSpeed);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mGameView.removeCallbacks(mRunnable);
+        mHandler.removeCallbacks(mRunnable);
     }
 
     @Override

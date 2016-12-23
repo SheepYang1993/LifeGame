@@ -1,11 +1,18 @@
 package me.sheepyang.lifegame.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
 import com.orhanobut.hawk.Hawk;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -26,6 +33,8 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     TContributionsView mSampleView;
     private Point[][] mSampleData;
     private PointArraysContributionsViewAdapter mSampleAdapter;
+    private EditText edtName;
+    private AlertDialog.Builder mSaveDialog;
 
     @Override
     public int getLayoutId() {
@@ -37,8 +46,32 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setBarTitle("编辑生物");
         showBack(true);
+        initView();
         initListener();
         initData();
+    }
+
+    private void initView() {
+        edtName = new EditText(mContext);
+        mSaveDialog = new AlertDialog.Builder(mContext)
+                .setView(edtName)
+                .setMessage("请输入生物名称")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (TextUtils.isEmpty(edtName.getText().toString())) {
+                            showToast("生物名称不能为空");
+                            return;
+                        }
+                        toSave(edtName.getText().toString());
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
     }
 
     private void initListener() {
@@ -92,9 +125,12 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    @OnClick({R.id.btn_demo1, R.id.btn_clear, R.id.btn_ok, R.id.btn_demo_list})
+    @OnClick({R.id.btn_save, R.id.btn_demo1, R.id.btn_clear, R.id.btn_ok, R.id.btn_demo_list})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_save:
+                mSaveDialog.show();
+                break;
             case R.id.btn_demo_list:
                 startActivityForResult(new Intent(mContext, DemoListActivity.class), TO_DEMO_LIST);
                 break;
@@ -131,6 +167,12 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void toSave(String name) {
+        Map<String, Point[][]> pointMap = new HashMap<>();
+        pointMap.put(name, mSampleData);
+        Hawk.put("PointMap", pointMap);
     }
 
     @Override

@@ -19,11 +19,11 @@ public class Config {
     public static final Integer DEFAULT_SAMPLE_HEIGHT = 10;// Sample界面高度
     public static final Integer DEFAULT_GAME_SPEED = 650;// 游戏初始速度
 
-    public static final Integer MIN_GAME_WIDTH = 10;// 游戏界面宽度
-    public static final Integer MIN_GAME_HEIGHT = 10;// 游戏界面高度
-    public static final Integer MIN_SAMPLE_WIDTH = 5;// Sample界面宽度
-    public static final Integer MIN_SAMPLE_HEIGHT = 5;// Sample界面高度
-    public static final Integer MIN_GAME_SPEED = 1;// 游戏初始速度
+    public static final Integer MIN_GAME_WIDTH = 10;// 最小游戏界面宽度
+    public static final Integer MIN_GAME_HEIGHT = 10;// 最小游戏界面高度
+    public static final Integer MIN_SAMPLE_WIDTH = 5;// 最小Sample界面宽度
+    public static final Integer MIN_SAMPLE_HEIGHT = 5;// 最小Sample界面高度
+    public static final Integer MIN_GAME_SPEED = 50;// 最小游戏初始速度
 
     public static final Integer EACH_SPEED = 50;// 每次增加/减少的速度
 }

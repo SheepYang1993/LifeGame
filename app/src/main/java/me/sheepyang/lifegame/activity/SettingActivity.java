@@ -1,5 +1,6 @@
 package me.sheepyang.lifegame.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -109,6 +110,12 @@ public class SettingActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         HawkUtils.putGameSpeed(gameSpeed);
         setResult(RESULT_OK);
         onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(mContext, MainActivity.class));
     }
 
     private void initData() {

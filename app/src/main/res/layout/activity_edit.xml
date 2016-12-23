@@ -33,6 +33,22 @@
             android:textColor="@color/word_black" />
 
         <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存"
+            android:textColor="@color/word_black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+
+        <Button
             android:id="@+id/btn_demo1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,15 +61,16 @@
             android:layout_height="wrap_content"
             android:text="生物图鉴"
             android:textColor="@color/word_black" />
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background_white"
         android:orientation="vertical">
 
         <me.sheepyang.lifegame.widget.TContributionsView
+            android:background="@color/background_gray"
             android:id="@+id/sample_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -78,12 +78,14 @@
         <LinearLayout
             android:layout_width="160dp"
             android:layout_height="160dp"
+            android:background="@color/background_white"
             android:orientation="vertical">
 
             <me.sheepyang.lifegame.widget.TContributionsView
                 android:id="@+id/sample_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/background_gray"
                 app:contributions_color_1="#b3c587"
                 app:contributions_color_2="#f4de29"
                 app:contributions_color_3="#f40d64"
@@ -98,12 +100,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_white"
         android:orientation="vertical">
 
         <me.sheepyang.lifegame.widget.TContributionsView
             android:id="@+id/game_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/background_gray"
             app:contributions_color_1="#b3c587"
             app:contributions_color_2="#f4de29"
             app:contributions_color_3="#f40d64"
